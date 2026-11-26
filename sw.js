@@ -1,6 +1,7 @@
 // Service worker: guarda o site no aparelho para abrir sem internet.
-// Sempre que publicar uma versão nova, aumente o número abaixo (rat-v13, rat-v14...).
-const CACHE = 'rat-v30';
+// Sempre que publicar uma versão nova, aumente o número abaixo (rat-v31, rat-v32...)
+// e o ?v= do style.css e do app.js no index.html.
+const CACHE = 'rat-v31';
 
 const FILES = [
   './',
@@ -34,7 +35,7 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   e.respondWith(
-    fetch(e.request)
+    fetch(e.request, { cache: 'no-cache' })   // sempre confere se há versão nova
       .then(res => {
         if (res.ok && new URL(e.request.url).origin === location.origin) {
           const copy = res.clone();

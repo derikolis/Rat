@@ -75,7 +75,7 @@
     for (const el of form.elements){
       if (!el.name) continue;
       if (el.type === 'radio'){ if (el.checked) data[el.name] = el.value; }
-      else data[el.name] = el.value;
+      else data[el.name] = el.dataset.iso !== undefined ? el.dataset.iso : el.value;
     }
     return { ...data, ...sigs, nPecas: pecasBox.children.length };
   }
@@ -323,7 +323,21 @@
     const st = document.createElement('style'); st.textContent = css.join('\n'); document.head.appendChild(st);
   })();
   // Procura o maior tamanho em que a RAT inteira cabe numa folha A4
+  // no PDF, campos de data viram texto (o Android desenha uma seta no campo de data que o CSS não remove)
+  function datesToText(){
+    form.querySelectorAll('input[type=date]').forEach(inp => {
+      const v = inp.value; inp.dataset.iso = v;
+      inp.type = 'text';
+      inp.value = v ? v.split('-').reverse().join('/') : '';
+    });
+  }
+  function datesBack(){
+    form.querySelectorAll('input[data-iso]').forEach(inp => {
+      inp.type = 'date'; inp.value = inp.dataset.iso; delete inp.dataset.iso;
+    });
+  }
   function enterPrintMode(fit){
+    if (!root.classList.contains('pm')) datesToText();
     root.classList.add('pm');
     form.style.removeProperty('--fit'); form.style.removeProperty('--w');
     layoutLined();
@@ -339,6 +353,7 @@
   function exitPrintMode(){
     if (!root.classList.contains('pm')) return;
     root.classList.remove('pm');
+    datesBack();
     form.style.removeProperty('--fit'); form.style.removeProperty('--w');
     layoutLined();
   }
