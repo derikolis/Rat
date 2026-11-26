@@ -443,7 +443,7 @@
       c.translate(W / 2, H / 2); c.rotate(-Math.PI / 2); c.fillText(txt, 0, 0);
       const im = doc.createElement('img'); im.src = cv.toDataURL(); im.style.cssText = `display:block;width:${W}px;height:${H}px`;
       sd.textContent = ''; sd.appendChild(im);
-      sd.style.cssText = `writing-mode:horizontal-tb;transform:none;padding:0;min-width:${W}px;width:${W}px;flex:none`;
+      sd.style.cssText = `writing-mode:horizontal-tb;transform:none;padding:0;min-width:${W}px;width:${W}px;flex:none;border-left:0;border-right:1.5px solid var(--line)`;
     });
     f.querySelectorAll('.add-peca,.rm-peca,.sugg').forEach(e => e.remove());
   }
