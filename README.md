@@ -1,5 +1,7 @@
 # RAT – Relatório de Atendimento Técnico
 
+**App no ar:** https://derikolis.github.io/Rat/
+
 Site para preencher a RAT no celular: campos digitáveis, assinatura do técnico e do cliente com o dedo, e geração de PDF (1 folha A4) ou imagem PNG. Funciona offline depois de instalado.
 
 ## Estrutura
@@ -21,6 +23,10 @@ RAT/
 ```
 
 ## Como publicar
+
+**GitHub Pages (atual):** o site é publicado automaticamente a partir da branch `main`.
+Para atualizar: aumente a versão em `sw.js`, faça commit e `git push` — em ~1 minuto o site atualiza.
+
 
 O site precisa estar em **https** para instalar como app e funcionar offline.
 
