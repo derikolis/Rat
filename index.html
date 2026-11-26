@@ -16,14 +16,23 @@
 <body>
 
 <div class="toolbar">
-  <button class="tb primary" id="btnPdf">
-    <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 11v6"/><path d="m9 14 3 3 3-3"/></svg>
-    <span>Gerar PDF</span>
-  </button>
-  <button class="tb" id="btnImg" title="Salvar a RAT como imagem (PNG)">
-    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg>
-    <span>Gerar Imagem</span>
-  </button>
+  <div class="tb-group" id="gerarWrap">
+    <button class="tb primary" id="btnGerar" aria-haspopup="menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+      <span>Gerar RAT</span>
+      <svg class="chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="tb-menu" id="gerarMenu" role="menu">
+      <button type="button" role="menuitem" id="btnPdf">
+        <i class="ic pdf"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></i>
+        <span><b>PDF</b><small>1 folha A4 · para imprimir ou enviar</small></span>
+      </button>
+      <button type="button" role="menuitem" id="btnImg">
+        <i class="ic img"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg></i>
+        <span><b>Imagem</b><small>PNG · para mandar no WhatsApp</small></span>
+      </button>
+    </div>
+  </div>
   <button class="tb" id="btnNova">
     <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 11v6"/><path d="M9 14h6"/></svg>
     <span>Nova RAT</span>

@@ -2,6 +2,12 @@
   const KEY = 'rat-rascunho-v1', KEEP = 'rat-tecnico-v1';
   const form = document.getElementById('rat');
 
+  // cada campo ganha um "envelope" (.inw) que desenha a linha fina no PDF
+  form.querySelectorAll('.f > input:not([type=radio]):not([type=checkbox])').forEach(inp => {
+    const w = document.createElement('span'); w.className = 'inw';
+    inp.replaceWith(w); w.appendChild(inp);
+  });
+
   /* ---------- sugestões de técnico ---------- */
   const TEC_KEY = 'rat-tecnicos-v1', DEFAULT_TECS = ['Derik Oliveira'];
   const tecInput = form.elements.tecnico, sugg = document.getElementById('suggTec');
@@ -345,6 +351,14 @@
     window.print();
   };
 
+  /* ---------- menu "Gerar RAT" (PDF ou Imagem) ---------- */
+  const gerarWrap = document.getElementById('gerarWrap'), btnGerar = document.getElementById('btnGerar');
+  function setMenu(open){ gerarWrap.classList.toggle('open', open); btnGerar.setAttribute('aria-expanded', open); }
+  btnGerar.addEventListener('click', () => setMenu(!gerarWrap.classList.contains('open')));
+  document.getElementById('gerarMenu').addEventListener('click', e => { if (e.target.closest('button')) setMenu(false); });
+  document.addEventListener('pointerdown', e => { if (!gerarWrap.contains(e.target)) setMenu(false); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+
   /* ---------- baixar como imagem ---------- */
   function loadH2C(){
     if (window.html2canvas) return Promise.resolve();
@@ -357,6 +371,12 @@
   }
   function prepClone(doc){
     const f = doc.getElementById('rat');
+    f.classList.add('capmode');
+    // a imagem usa as linhas normais (as linhas finas são só para o PDF)
+    f.querySelectorAll('.inw > html2canvaspseudoelement, .lines i > html2canvaspseudoelement, .sigline > html2canvaspseudoelement').forEach(e => e.remove());
+    f.querySelectorAll('.inw').forEach(w => { w.className = 'inw-cap'; });
+    f.querySelectorAll('.lines').forEach(l => { l.className = 'lines-cap'; });
+    f.querySelectorAll('.sigline').forEach(l => { l.className = 'sigline-cap'; });
     f.querySelectorAll('input:not([type=radio]):not([type=checkbox])').forEach(inp => {
       let v = form.elements[inp.name] ? form.elements[inp.name].value : inp.value;
       if (inp.type === 'date' && v){ const [y, m, d] = v.split('-'); v = `${d}/${m}/${y}`; }
@@ -415,7 +435,7 @@
   document.getElementById('btnImg').onclick = async () => {
     syncMirrors();
     if (!checkMissing('a imagem')) return;
-    const btn = document.getElementById('btnImg'), lbl = btn.querySelector('span'), txt = lbl.textContent;
+    const btn = document.getElementById('btnGerar'), lbl = btn.querySelector('span'), txt = lbl.textContent;
     btn.disabled = true; lbl.textContent = 'Gerando...';
     try {
       await loadH2C();
@@ -456,6 +476,8 @@
   };
 
   /* ---------- início ---------- */
+  // deixa a letra de caneta da impressão já carregada antes de gerar o PDF
+  if (document.fonts) document.fonts.load('600 20px CaveatPrint').catch(() => {});
   const draft = localStorage.getItem(KEY);
   apply(draft ? JSON.parse(draft) : defaults());
   /* ---------- funcionar offline (app instalável) ---------- */

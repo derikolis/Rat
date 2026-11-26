@@ -1,5 +1,6 @@
 /* RAT - Relatório de Atendimento Técnico */
   @font-face{font-family:"Caveat";font-style:normal;font-weight:400 700;font-display:swap;ascent-override:72%;descent-override:24%;line-gap-override:0%;src:url(../fonts/caveat-latin.woff2) format("woff2")}
+  @font-face{font-family:"CaveatPrint";font-style:normal;font-weight:400 700;font-display:swap;ascent-override:100%;descent-override:22%;line-gap-override:0%;src:url(../fonts/caveat-latin.woff2) format("woff2")}
   :root{
     --ink:#1b1b1b; --muted:#666; --line:#222; --brand:#1f4e8c; --accent:#d9a3c8;
     --bg:#eef1f5; --paper:#fff; --focus:#e8f0fb;
@@ -76,7 +77,7 @@
   .modal header{padding:10px 14px;background:var(--brand);color:#fff;font-weight:bold;font-size:16px}
   .modal .pad{flex:1;position:relative;touch-action:none}
   .modal canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
-  .modal .hint{position:absolute;left:8%;right:8%;bottom:28%;border-top:2px solid #b9c3d3;text-align:center;color:#9aa6b8;padding-top:6px;pointer-events:none;font-size:14px}
+  .modal .hint{position:absolute;left:8%;right:8%;bottom:12%;border-top:2px solid #b9c3d3;text-align:center;color:#9aa6b8;padding-top:6px;pointer-events:none;font-size:14px}
   .modal footer{display:flex;gap:8px;padding:10px;padding-bottom:max(10px,env(safe-area-inset-bottom))}
   .modal footer button{flex:1;padding:14px;font-size:16px;font-weight:bold;border:0;border-radius:8px}
   .b-clear{background:#eee} .b-cancel{background:#fbe9e9;color:#a12020} .b-ok{background:#2e9b4f;color:#fff}
@@ -287,3 +288,65 @@
 @media screen and (max-width:760px){
   .f input:not([type=radio]):not([type=checkbox]){background-position:0 calc(100% - 6px - .3em)}
 }
+
+/* ---------- menu "Gerar RAT" ---------- */
+.tb-group{position:relative;display:inline-flex}
+.toolbar .tb .chev{width:16px;height:16px;margin-left:-2px;transition:transform .15s}
+.tb-group.open .chev{transform:rotate(180deg)}
+.tb-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;z-index:60;min-width:300px;padding:6px;
+  background:#fff;border-radius:16px;box-shadow:0 16px 40px rgba(10,30,70,.30),0 0 0 1px rgba(15,40,80,.06)}
+.tb-group.open .tb-menu{display:block;animation:menuIn .14s ease-out}
+@keyframes menuIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.tb-menu button{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border:0;border-radius:12px;
+  background:none;text-align:left;cursor:pointer;font-family:Arial,Helvetica,sans-serif;color:#1b1b1b;-webkit-tap-highlight-color:transparent}
+.tb-menu button+button{margin-top:2px}
+.tb-menu button:hover,.tb-menu button:focus-visible{background:#eef4fc;outline:none}
+.tb-menu button:active{background:#e2ecf9}
+.tb-menu .ic{display:flex;align-items:center;justify-content:center;flex:none;width:42px;height:42px;border-radius:12px}
+.tb-menu .ic.pdf{background:#e7f6ec;color:#23964f}
+.tb-menu .ic.img{background:#e8f0fb;color:var(--brand)}
+.tb-menu .ic svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tb-menu b{display:block;font-size:15.5px}
+.tb-menu small{display:block;margin-top:3px;font-size:12.5px;font-weight:400;color:#6b7686;white-space:nowrap}
+@media screen and (max-width:760px){
+  .tb-group{flex:1.5}
+  .tb-group>.tb{flex:1;width:100%}
+  .toolbar .tb .chev{display:none}
+  .tb-menu{top:auto;bottom:calc(100% + 12px);min-width:0;width:min(300px,calc(100vw - 16px))}
+  .tb-group.open .tb-menu{animation-name:menuUp}
+  @keyframes menuUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .tb-menu button{padding:12px}
+}
+@media print{ .tb-menu{display:none!important} }
+
+/* ---------- PDF: linha de verdade (borda), sem o fundo desenhado ---------- */
+@media print{
+  .f input:not([type=radio]):not([type=checkbox]){background-image:none!important;border-bottom-color:var(--line)!important;
+    font-family:'CaveatPrint','Caveat',cursive!important;line-height:normal!important;padding:0 2px!important}
+}
+
+/* ---------- PDF/imagem: igual à tela de preencher ---------- */
+@media print{
+  /* mesmas medidas da tela de preencher */
+  .f label{font-size:14px!important;padding-bottom:3px!important}
+  .f input:not([type=radio]):not([type=checkbox]){font-size:22px!important}
+}
+
+/* ---------- PDF: linhas de preencher finas, como no formulário original ---------- */
+.inw{flex:1;min-width:0;display:flex;position:relative}
+.inw > input{flex:1;min-width:0;width:100%}
+@media print{
+  /* o Chrome arredonda bordas finas para 1px; uma faixa de 1px achatada pela metade não é arredondada */
+  .f input:not([type=radio]):not([type=checkbox]){border-bottom-color:transparent!important}
+  .inw::after,.lines i::after,.sigline::before{content:'';position:absolute;left:0;right:0;height:1px;background:var(--line);transform:scaleY(.5)}
+  .inw::after,.lines i::after{bottom:0;transform-origin:bottom}
+  .lines i{position:relative;border-bottom-color:transparent}
+  .sigline{position:relative;border-top-color:transparent}
+  .sigline::before{top:0;transform-origin:top}
+}
+
+/* ---------- imagem PNG: linhas normais ---------- */
+.inw-cap{flex:1;min-width:0;display:flex}
+.lines-cap{position:absolute;inset:0;pointer-events:none}
+.lines-cap i{display:block;height:var(--lh);border-bottom:1px solid var(--line)}
+.sigline-cap{border-top:1px solid var(--line);text-align:center;font-size:13px;padding-top:3px}
