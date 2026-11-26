@@ -1,6 +1,6 @@
 // Service worker: guarda o site no aparelho para abrir sem internet.
 // Sempre que publicar uma versão nova, aumente o número abaixo (rat-v13, rat-v14...).
-const CACHE = 'rat-v26';
+const CACHE = 'rat-v30';
 
 const FILES = [
   './',

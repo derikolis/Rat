@@ -350,3 +350,87 @@
 .lines-cap{position:absolute;inset:0;pointer-events:none}
 .lines-cap i{display:block;height:var(--lh);border-bottom:1px solid var(--line)}
 .sigline-cap{border-top:1px solid var(--line);text-align:center;font-size:13px;padding-top:3px}
+
+/* ---------- Minhas RATs ---------- */
+.toolbar .tb{position:relative}
+.toolbar .tb .badge{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:#d9a3c8;color:#1c467f;
+  font:bold 12px/20px Arial,sans-serif;font-style:normal;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.toolbar .tb .badge:empty{display:none}
+.drawer{position:fixed;inset:0;z-index:90;pointer-events:none}
+.dw-bg{position:absolute;inset:0;background:rgba(10,25,50,.45);opacity:0;transition:opacity .2s}
+.dw-panel{position:absolute;top:0;right:0;bottom:0;width:min(420px,100%);background:#f6f8fb;display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .22s ease;box-shadow:-10px 0 30px rgba(0,0,0,.2);font-family:Arial,Helvetica,sans-serif}
+.drawer.open{pointer-events:auto}
+.drawer.open .dw-bg{opacity:1}
+.drawer.open .dw-panel{transform:none}
+.dw-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--brand);color:#fff}
+.dw-head b{font-size:17px}
+.dw-head b span{font-weight:normal;opacity:.8}
+.dw-close{width:40px;height:40px;border:0;border-radius:10px;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.dw-close svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+.dw-tip{margin:0;padding:10px 16px;font-size:13px;color:#5a6b85;border-bottom:1px solid #e3e8ef}
+.dw-list{flex:1;overflow:auto;padding:10px 12px;display:flex;flex-direction:column;gap:10px}
+.dw-item{background:#fff;border:1px solid #dfe5ee;border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.dw-item.cur{border-color:var(--brand);box-shadow:0 0 0 2px rgba(31,78,140,.15)}
+.dw-open{display:flex;flex-direction:column;gap:4px;width:100%;padding:12px 14px 10px;border:0;background:none;text-align:left;cursor:pointer;font-family:inherit;color:#1b1b1b}
+.dw-open:hover{background:#f3f7fd}
+.dw-t{font-size:16px;font-weight:bold}
+.dw-t em{font-style:normal;color:#8a96a8}
+.dw-s{font-size:14px;color:#3a4657}
+.dw-w{font-size:12px;color:#8a96a8}
+.dw-tags{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0}
+.tag{font-style:normal;font-size:11.5px;font-weight:bold;padding:3px 8px;border-radius:999px;background:#eef1f5;color:#5a6b85}
+.tag.ok{background:#e7f6ec;color:#1f8a48}
+.tag.pend{background:#fff4e0;color:#a86400}
+.tag.sig{background:#e8f0fb;color:var(--brand)}
+.tag.nosig{background:#fbecec;color:#a12020}
+.tag.now{background:var(--brand);color:#fff;vertical-align:middle;margin-left:4px}
+.dw-acts{display:flex;border-top:1px solid #eef1f5}
+.dw-acts button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:42px;border:0;background:none;cursor:pointer;
+  font:600 13.5px Arial,sans-serif;color:var(--brand)}
+.dw-acts button+button{border-left:1px solid #eef1f5}
+.dw-acts button:hover{background:#f3f7fd}
+.dw-acts button.del{color:#a12020}
+.dw-acts svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dw-foot{padding:12px;padding-bottom:max(12px,env(safe-area-inset-bottom));border-top:1px solid #e3e8ef;background:#fff}
+.dw-new{width:100%;height:50px;border:0;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+  font:600 16px Arial,sans-serif;color:#fff;background:linear-gradient(180deg,#34b866,#23964f);box-shadow:0 4px 12px rgba(20,120,60,.3)}
+.dw-new svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);z-index:130;max-width:calc(100vw - 32px);padding:12px 18px;border-radius:12px;
+  background:#1b2a40;color:#fff;font:14px Arial,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media screen and (max-width:760px){
+  .dw-panel{top:auto;left:0;width:100%;height:88%;border-radius:18px 18px 0 0;transform:translateY(100%)}
+  .toast{bottom:calc(92px + env(safe-area-inset-bottom))}
+  .toolbar .tb .badge{top:4px;right:8px}
+}
+@media print{ .drawer,.toast{display:none!important} }
+
+/* ---------- PDF: campos de data sem a seta/ícone do Android ---------- */
+@media print{
+  .f input[type=date]{-webkit-appearance:none!important;appearance:none!important;background-color:transparent!important}
+  .f input[type=date]::-webkit-calendar-picker-indicator,
+  .f input[type=date]::-webkit-inner-spin-button,
+  .f input[type=date]::-webkit-clear-button{display:none!important;-webkit-appearance:none}
+}
+/* no celular, sem a seta também na tela */
+@media screen and (max-width:760px){
+  .f input[type=date]{-webkit-appearance:none;appearance:none}
+  .f input[type=date]::-webkit-inner-spin-button,.f input[type=date]::-webkit-clear-button{display:none}
+}
+
+/* ---------- celular: opções (Backup, Avarias, Status) do mesmo tamanho ---------- */
+@media screen and (max-width:760px){
+  .avar,.inst .bk,.status>div:not(.icons){align-items:stretch}
+  .avar .opt,.inst .bk .opt,.status .opt{flex:1 1 0;min-width:0;min-height:54px;margin:0;
+    justify-content:flex-start;padding:8px 10px;line-height:1.2;font-size:15px}
+  .avar .opt input,.inst .bk .opt input,.status .opt input{flex:none}
+}
+
+/* ---------- letra de caneta: nunca "negrito falso" (Android engrossava no PDF) ---------- */
+.f input,.f select,textarea,.print-text,.cap,.cap-ta,.sugg-i{
+  font-synthesis:none;-webkit-font-synthesis:none;font-variation-settings:"wght" 600}
+@media print{
+  .f input,textarea,.print-text{font-synthesis:none!important;font-variation-settings:"wght" 600!important;
+    -webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+}

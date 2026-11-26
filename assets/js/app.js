@@ -90,20 +90,31 @@
     syncMirrors();
     layoutLined();
   }
+  /* ---------- várias RATs salvas no aparelho ---------- */
+  const LIST = 'rat-lista-v1', CUR = 'rat-atual-v1';
+  let list = [], currentId = null;
+  const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  function readList(){ try { return JSON.parse(localStorage.getItem(LIST) || '[]'); } catch(e){ return []; } }
+  function writeList(){ localStorage.setItem(LIST, JSON.stringify(list)); localStorage.setItem(CUR, currentId); updateCount(); }
+  const findRat = id => list.find(r => r.id === id);
+
   let t;
-  function save(){
+  function writeNow(){
     clearTimeout(t);
-    t = setTimeout(() => {
-      const d = collect();
-      try{
-        localStorage.setItem(KEY, JSON.stringify(d));
-        const keep = { sigTecnico: d.sigTecnico };
-        form.querySelectorAll('[data-keep]').forEach(el => keep[el.name] = el.value);
-        localStorage.setItem(KEEP, JSON.stringify(keep));
-        document.getElementById('saved').textContent = 'Rascunho salvo às ' + nowTime();
-      }catch(e){ document.getElementById('saved').textContent = 'Não foi possível salvar o rascunho'; }
-    }, 300);
+    const d = collect();
+    try{
+      const r = findRat(currentId);
+      if (r){ r.data = d; r.updated = Date.now(); }
+      writeList();
+      const keep = { sigTecnico: d.sigTecnico };
+      form.querySelectorAll('[data-keep]').forEach(el => keep[el.name] = el.value);
+      localStorage.setItem(KEEP, JSON.stringify(keep));
+      document.getElementById('saved').textContent = 'Salvo às ' + nowTime();
+    }catch(e){
+      document.getElementById('saved').textContent = 'Memória cheia: exclua RATs antigas em "Minhas RATs"';
+    }
   }
+  function save(){ clearTimeout(t); t = setTimeout(writeNow, 300); }
   function defaults(){
     const keep = JSON.parse(localStorage.getItem(KEEP) || '{}');
     return { ...keep, tecData: today(), clienteData: today() };
@@ -465,21 +476,127 @@
       btn.disabled = false; lbl.textContent = txt;
     }
   };
-  document.getElementById('btnNova').onclick = () => {
-    if (!confirm('Começar uma nova RAT? Os dados do técnico (nome, razão social e assinatura) são mantidos.')) return;
-    apply(defaults()); save(); window.scrollTo(0,0);
-  };
+  /* ---------- Nova RAT / abrir / duplicar / excluir ---------- */
+  // RAT "vazia" = só tem dados do técnico e datas
+  const IGNORE = ['tecnico', 'razaoSocial', 'tecData', 'clienteData', 'sigTecnico', 'nPecas'];
+  const isEmpty = d => !Object.keys(d || {}).some(k => !IGNORE.includes(k) && d[k] && String(d[k]).trim());
+
+  function openRat(id){
+    writeNow();
+    const r = findRat(id); if (!r) return;
+    currentId = id; writeList();
+    apply(r.data); window.scrollTo(0, 0);
+    toast('RAT ' + (r.data.ocorrencia || 'sem número') + ' aberta');
+  }
+  function createRat(data){
+    writeNow();
+    const cur = findRat(currentId);
+    if (cur && isEmpty(cur.data) && !data){            // a atual já está em branco: reaproveita
+      apply(defaults()); writeNow(); window.scrollTo(0, 0); return;
+    }
+    const r = { id: newId(), created: Date.now(), updated: Date.now(), data: data || defaults() };
+    list.push(r); currentId = r.id; writeList();
+    apply(r.data); writeNow(); window.scrollTo(0, 0);
+  }
+  function duplicateRat(id){
+    writeNow();
+    const r = findRat(id); if (!r) return;
+    const d = JSON.parse(JSON.stringify(r.data));
+    d.ocorrencia = ''; d.sigCliente = ''; d.status = ''; d.inicio = ''; d.termino = '';
+    d.tecData = today(); d.clienteData = today();
+    createRat(d);
+    toast('Cópia criada: preencha o nº da ocorrência');
+  }
+  function deleteRat(id){
+    const r = findRat(id); if (!r) return;
+    if (!confirm('Excluir a RAT ' + (r.data.ocorrencia || 'sem número') + (r.data.cliente ? ' (' + r.data.cliente + ')' : '') + '?\n\nIsso não pode ser desfeito.')) return;
+    list = list.filter(x => x.id !== id);
+    if (id === currentId){
+      if (list.length){ const last = [...list].sort((a, b) => b.updated - a.updated)[0]; currentId = last.id; apply(last.data); }
+      else { const n = { id: newId(), created: Date.now(), updated: Date.now(), data: defaults() }; list.push(n); currentId = n.id; apply(n.data); }
+    }
+    writeList(); renderList();
+  }
+
+  document.getElementById('btnNova').onclick = () => { createRat(); toast('A RAT anterior ficou salva em "Minhas RATs"'); };
   document.getElementById('btnLimpar').onclick = () => {
-    if (!confirm('Apagar TODOS os dados, inclusive nome e assinatura do técnico salvos?')) return;
-    localStorage.removeItem(KEY); localStorage.removeItem(KEEP);
-    apply({ tecData: today(), clienteData: today() }); window.scrollTo(0,0);
+    if (!confirm('Limpar todos os campos DESTA RAT (inclusive nome e assinatura do técnico salvos)?\n\nAs outras RATs salvas não são apagadas.')) return;
+    localStorage.removeItem(KEEP);
+    apply({ tecData: today(), clienteData: today() }); writeNow(); window.scrollTo(0,0);
   };
+
+  /* ---------- painel "Minhas RATs" ---------- */
+  const drawer = document.getElementById('drawer'), dwList = document.getElementById('dwList');
+  const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  function fmtWhen(ms){
+    const d = new Date(ms), now = new Date();
+    const hm = d.toTimeString().slice(0, 5);
+    if (d.toDateString() === now.toDateString()) return 'hoje às ' + hm;
+    const y = new Date(now); y.setDate(now.getDate() - 1);
+    if (d.toDateString() === y.toDateString()) return 'ontem às ' + hm;
+    return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ' às ' + hm;
+  }
+  function updateCount(){
+    const n = list.length;
+    document.getElementById('listaCount').textContent = n > 1 ? n : '';
+    document.getElementById('dwCount').textContent = '(' + n + ')';
+  }
+  function renderList(){
+    const items = [...list].sort((a, b) => b.updated - a.updated);
+    dwList.innerHTML = items.map(r => {
+      const d = r.data || {}, cur = r.id === currentId;
+      const st = d.status === 'CONCLUIDO' ? '<i class="tag ok">Concluído</i>' : d.status === 'PENDENTE' ? '<i class="tag pend">Pendente</i>' : '';
+      const sig = d.sigCliente ? '<i class="tag sig">Cliente assinou</i>' : '<i class="tag nosig">Sem assinatura do cliente</i>';
+      return `<div class="dw-item${cur ? ' cur' : ''}" data-id="${r.id}">
+        <button type="button" class="dw-open" data-act="open">
+          <span class="dw-t">${d.ocorrencia ? 'RAT ' + esc(d.ocorrencia) : '<em>RAT sem número</em>'}${cur ? ' <i class="tag now">aberta</i>' : ''}</span>
+          <span class="dw-s">${esc(d.cliente || 'Sem cliente')}${d.eqModelo ? ' · ' + esc(d.eqModelo) : ''}</span>
+          <span class="dw-tags">${st}${sig}</span>
+          <span class="dw-w">Editada ${fmtWhen(r.updated)}</span>
+        </button>
+        <div class="dw-acts">
+          <button type="button" data-act="dup" title="Duplicar (usar como modelo)"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>Duplicar</span></button>
+          <button type="button" data-act="del" class="del" title="Excluir"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4h6v3"/></svg><span>Excluir</span></button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  function openDrawer(){ writeNow(); renderList(); drawer.classList.add('open'); drawer.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; }
+  function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; }
+  document.getElementById('btnLista').onclick = openDrawer;
+  document.getElementById('dwClose').onclick = closeDrawer;
+  document.getElementById('dwBg').onclick = closeDrawer;
+  document.getElementById('dwNova').onclick = () => { createRat(); closeDrawer(); toast('Nova RAT em branco'); };
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer(); });
+  dwList.addEventListener('click', e => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    const id = b.closest('.dw-item').dataset.id, act = b.dataset.act;
+    if (act === 'open'){ if (id !== currentId) openRat(id); closeDrawer(); }
+    else if (act === 'dup'){ duplicateRat(id); closeDrawer(); }
+    else if (act === 'del') deleteRat(id);
+  });
+
+  /* ---------- aviso rápido ---------- */
+  let toastT;
+  function toast(msg){
+    let el = document.getElementById('toast');
+    if (!el){ el = document.createElement('div'); el.id = 'toast'; el.className = 'toast'; document.body.appendChild(el); }
+    el.textContent = msg; el.classList.add('show');
+    clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('show'), 2600);
+  }
 
   /* ---------- início ---------- */
   // deixa a letra de caneta da impressão já carregada antes de gerar o PDF
   if (document.fonts) document.fonts.load('600 20px CaveatPrint').catch(() => {});
-  const draft = localStorage.getItem(KEY);
-  apply(draft ? JSON.parse(draft) : defaults());
+  list = readList();
+  if (!list.length){                                   // primeira vez: traz o rascunho antigo, se houver
+    let old = null; try { old = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch(e){}
+    list.push({ id: newId(), created: Date.now(), updated: Date.now(), data: old || defaults() });
+    localStorage.removeItem(KEY);
+  }
+  currentId = findRat(localStorage.getItem(CUR)) ? localStorage.getItem(CUR) : [...list].sort((a, b) => b.updated - a.updated)[0].id;
+  writeList();
+  apply(findRat(currentId).data);
   /* ---------- funcionar offline (app instalável) ---------- */
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')){
     navigator.serviceWorker.register('sw.js').catch(() => {});
