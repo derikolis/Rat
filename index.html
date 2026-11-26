@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f4e8c">
+<title>RAT - Relatório de Atendimento Técnico</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="assets/icons/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="RAT">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="toolbar">
+  <button class="tb primary" id="btnPdf">
+    <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 11v6"/><path d="m9 14 3 3 3-3"/></svg>
+    <span>Gerar PDF</span>
+  </button>
+  <button class="tb" id="btnImg" title="Salvar a RAT como imagem (PNG)">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg>
+    <span>Gerar Imagem</span>
+  </button>
+  <button class="tb" id="btnNova">
+    <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 11v6"/><path d="M9 14h6"/></svg>
+    <span>Nova RAT</span>
+  </button>
+  <button class="tb ghost" id="btnLimpar">
+    <svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4h6v3"/></svg>
+    <span>Limpar tudo</span>
+  </button>
+  <div class="saved"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg><span id="saved">Rascunho salvo automaticamente neste aparelho</span></div>
+</div>
+
+<form class="sheet" id="rat" autocomplete="off" onsubmit="return false">
+  <div class="topbar"><i></i><i></i></div>
+  <div class="head">
+    <div class="logo">voke</div>
+    <div class="title"><b>RAT- RELATÓRIO DE ATENDIMENTO TÉCNICO</b><span>Ordem de serviço parceiro VOKE</span></div>
+  </div>
+
+  <!-- Ocorrência -->
+  <div class="box"><div class="content">
+    <div class="row c2">
+      <div class="f"><label>Número da Ocorrência</label><input name="ocorrencia" inputmode="text"></div>
+      <div class="f sugg-wrap"><label>Nome Técnico(a):</label><input name="tecnico" data-keep autocomplete="off"><div class="sugg" id="suggTec"></div></div>
+    </div>
+    <div class="row"><div class="f"><label>Razão Social Parceiro:</label><input name="razaoSocial" data-keep></div></div>
+  </div></div>
+
+  <!-- Cliente -->
+  <div class="box"><div class="side">Cliente:</div><div class="content">
+    <div class="row"><div class="f"><label>Cliente:</label><input name="cliente"></div></div>
+    <div class="row c21">
+      <div class="f"><label>Endereço:</label><input name="endereco"></div>
+      <div class="f"><label>Bairro:</label><input name="bairro"></div>
+    </div>
+    <div class="row c3">
+      <div class="f"><label>Cidade:</label><input name="cidade"></div>
+      <div class="f"><label>Estado:</label><input name="estado" maxlength="2" style="text-transform:uppercase"></div>
+      <div class="f"><label>Nome Usuário:</label><input name="usuario"></div>
+    </div>
+  </div></div>
+
+  <!-- Equipamento afetado -->
+  <div class="box"><div class="side">Equipamento afetado</div><div class="content">
+    <div class="row c2">
+      <div class="f"><label>Fabricante:</label><input name="eqFabricante"></div>
+      <div class="f"><label>Modelo</label><input name="eqModelo"></div>
+    </div>
+    <div class="row c2">
+      <div class="f"><label>Nº de série</label><input name="eqSerie"></div>
+      <div class="f"><label>Patrimônio</label><input name="eqPatrimonio"></div>
+    </div>
+  </div></div>
+
+  <!-- Defeito -->
+  <div class="box"><div class="side">Defeito</div><div class="content">
+    <div style="font-size:14px">Defeito/erro</div>
+    <div class="lined"><textarea name="defeito" rows="2"></textarea></div>
+    <div class="print-text def" data-for="defeito"></div>
+  </div></div>
+
+  <!-- Serviços -->
+  <div class="box"><div class="side">Serviços</div><div class="content">
+    <div class="center">DESCRIÇÃO DO ATENDIMENTO</div>
+    <div class="lined"><textarea name="descricao" rows="7"></textarea></div>
+    <div class="print-text desc" data-for="descricao"></div>
+  </div></div>
+
+  <!-- Equipamento instalado -->
+  <div class="box"><div class="side">Equipamento Instalado</div><div class="content inst" style="padding:0">
+    <div class="bk">
+      <div>Utilizado Backup</div>
+      <label class="opt"><input type="radio" name="backup" value="SIM"> SIM</label>
+      <label class="opt"><input type="radio" name="backup" value="NAO"> NÃO</label>
+    </div>
+    <div class="rest">
+      <div id="pecas"><div class="peca">
+      <div class="row c3">
+        <div class="f"><label>Peças:</label><input name="pecas"></div>
+        <div class="f"><label>Fabricante:</label><input name="instFabricante"></div>
+        <div class="f"><label>Patrimônio</label><input name="instPatrimonio"></div>
+      </div>
+      <div class="row c2">
+        <div class="f"><label>Modelo</label><input name="instModelo"></div>
+        <div class="f"><label>Nº de série</label><input name="instSerie"></div>
+      </div>
+      </div></div>
+      <button type="button" class="add-peca" id="addPeca">+ Adicionar peça</button>
+      <div class="avar">
+        <span>AVARIAS?</span>
+        <label class="opt"><input type="radio" name="avarias" value="COM"> Com Avarias</label>
+        <label class="opt"><input type="radio" name="avarias" value="NENHUMA"> Nenhuma aparente</label>
+      </div>
+      <div class="row"><div class="f"><label>Descrição das avarias:</label><input name="avariasDesc"></div></div>
+    </div>
+  </div></div>
+
+  <!-- Status -->
+  <div class="status">
+    <b>Status:</b>
+    <div>
+      <label class="opt"><input type="radio" name="status" value="CONCLUIDO"> Concluído</label>
+      <label class="opt"><input type="radio" name="status" value="PENDENTE"> Pendente</label>
+    </div>
+    <div class="icons" aria-hidden="true"><img alt="" src="assets/img/equipamentos.png"></div>
+  </div>
+
+  <div class="decl">DECLARO QUE OS SERVIÇOS DESCRITOS NESTE RELATÓRIO FORAM PRESTADOS E DADOS COMO ACEITOS POR MIM NESSA DATA</div>
+
+  <div class="signs">
+    <div>
+      <h3>PREENCHIMENTO DO TÉCNICO</h3>
+      <div class="row"><div class="f"><label>Data:</label><input type="date" name="tecData"></div></div>
+      <div class="row c2">
+        <div class="f"><label>Início:</label><input class="hora" name="inicio" inputmode="numeric" maxlength="5" placeholder="--:--" autocomplete="off"></div>
+        <div class="f"><label>Término:</label><input class="hora" name="termino" inputmode="numeric" maxlength="5" placeholder="--:--" autocomplete="off"></div>
+      </div>
+      <div class="sig" data-sig="sigTecnico" data-title="Assinatura do técnico"><span>✍️ Toque para assinar</span></div>
+      <div class="sigline">Assinatura técnico</div>
+    </div>
+    <div>
+      <h3>PREENCHIMENTO DO CLIENTE</h3>
+      <div class="row"><div class="f"><label>Nome cliente legível:</label><input name="clienteNome"></div></div>
+      <div class="row"><div class="f"><label>Data:</label><input type="date" name="clienteData"></div></div>
+      <div class="sig" data-sig="sigCliente" data-title="Assinatura do cliente"><span>✍️ Toque para assinar</span></div>
+      <div class="sigline">Assinatura cliente</div>
+    </div>
+  </div>
+
+  <div class="footer"><img alt="Para que pessoas impulsionem o futuro com a tecnologia" src="assets/img/rodape.png"></div>
+</form>
+
+<!-- Modal de assinatura -->
+<div class="modal" id="modal">
+  <header id="modalTitle">Assinatura</header>
+  <div class="pad" id="pad"><canvas id="canvas"></canvas><div class="hint">Assine acima da linha</div></div>
+  <footer>
+    <button class="mb cancel" id="mCancel">
+      <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg><span>Cancelar</span>
+    </button>
+    <button class="mb clear" id="mClear">
+      <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg><span>Limpar</span>
+    </button>
+    <button class="mb ok" id="mOk">
+      <svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg><span>Confirmar</span>
+    </button>
+  </footer>
+</div>
+
+<script src="assets/js/app.js"></script>
+</body>
+</html>
