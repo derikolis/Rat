@@ -1,14 +1,19 @@
 // Service worker: guarda o site no aparelho para abrir sem internet.
-// Sempre que publicar uma versão nova, aumente o número abaixo (rat-v31, rat-v36...)
+// Sempre que publicar uma versão nova, aumente o número abaixo (rat-v31, rat-v48...)
 // e o ?v= do style.css e do app.js no index.html.
-const CACHE = 'rat-v36';
+const CACHE = 'rat-v48';
 
 const FILES = [
   './',
   './index.html',
+  './mascara.html',
   './manifest.json',
   './assets/css/style.css',
   './assets/js/app.js',
+  './assets/js/mascara.js',
+  './assets/js/swipe.js',
+  './assets/css/swipe.css',
+  './assets/css/mascara.css',
   './assets/js/vendor/html2canvas.min.js',
   './assets/fonts/caveat-latin.woff2',
   './assets/img/equipamentos.png',

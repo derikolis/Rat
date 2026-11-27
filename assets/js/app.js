@@ -115,6 +115,7 @@
     }
   }
   function save(){ clearTimeout(t); t = setTimeout(writeNow, 300); }
+  window.addEventListener('pagehide', () => { clearTimeout(t); writeNow(); });   // ao sair da página (ex.: ir para a Máscara)
   function defaults(){
     const keep = JSON.parse(localStorage.getItem(KEEP) || '{}');
     return { ...keep, tecData: today(), clienteData: today() };
@@ -497,6 +498,8 @@
       btn.disabled = false; lbl.textContent = txt;
     }
   };
+
+  document.getElementById('btnMascara').onclick = () => { writeNow(); location.href = 'mascara.html'; };
 
   /* ---------- compartilhar a RAT (imagem) ---------- */
   const shareBar = document.getElementById('shareBar');

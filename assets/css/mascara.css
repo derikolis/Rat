@@ -1,0 +1,170 @@
+:root{--brand:#1f4e8c;--line:#dfe5ee}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#eef2f7;color:#1b1b1b;-webkit-text-size-adjust:100%}
+
+.mk-head{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:10px;padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top));
+  background:linear-gradient(180deg,#24589c,#1f4e8c);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.mk-head h1{margin:0;font-size:18px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mk-back{display:flex;align-items:center;gap:4px;height:40px;padding:0 12px 0 8px;border-radius:10px;background:rgba(255,255,255,.14);
+  color:#fff;text-decoration:none;font-weight:bold;font-size:14px;flex:none}
+.mk-back svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+
+.mk{max-width:760px;margin:0 auto;padding:14px 12px calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px}
+.mk-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 1px 2px rgba(0,0,0,.04);min-width:0}
+.mk-lbl{display:block;font-weight:bold;font-size:14px;color:var(--brand);margin-bottom:6px}
+.mk-row{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.mk-hint{font-size:12.5px;color:#6b7a90;margin:0 0 8px}
+select,textarea{width:100%;font-size:16px;border:1px solid #cfd6e0;border-radius:10px;background:#fff;color:#1b1b1b}
+select{height:46px;padding:0 10px}
+textarea{display:block;padding:10px 12px;font-family:Consolas,'Courier New',monospace;font-size:15px;line-height:1.45;resize:vertical}
+#mkOut{min-height:340px}
+#mkTpl{min-height:300px;font-size:14px}
+select:focus,textarea:focus{outline:2px solid rgba(31,78,140,.35);border-color:var(--brand)}
+.mk-chk{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:14px;color:#3a4657}
+.mk-chk input{width:20px;height:20px;accent-color:var(--brand)}
+
+.mk-acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.mk-btn{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;gap:6px;height:46px;padding:0 10px;border-radius:12px;
+  border:1px solid #cfd6e0;background:#fff;color:var(--brand);font:bold 14px Arial,sans-serif;cursor:pointer;white-space:nowrap}
+.mk-btn svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mk-btn.pri{background:linear-gradient(180deg,#36b06a,#2a9a59);border-color:#26904f;color:#fff}
+.mk-btn.wa{color:#1f8a48}
+.mk-btn:active{transform:translateY(1px)}
+
+.mk-model summary{cursor:pointer;font-weight:bold;color:var(--brand);font-size:15px;list-style:none;display:flex;align-items:center;gap:8px}
+.mk-model summary::-webkit-details-marker{display:none}
+.mk-model summary::before{content:'';width:8px;height:8px;border-right:2.4px solid currentColor;border-bottom:2.4px solid currentColor;transform:rotate(-45deg);transition:transform .15s}
+.mk-model[open] summary::before{transform:rotate(45deg)}
+.mk-model[open] summary{margin-bottom:10px}
+.mk-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.mk-tags button{border:1px solid #cfdcf0;background:#eef4fc;color:var(--brand);border-radius:999px;padding:6px 10px;font:12.5px Arial,sans-serif;cursor:pointer}
+
+.mk-toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translate(-50%,20px);z-index:50;max-width:calc(100vw - 32px);
+  padding:12px 18px;border-radius:12px;background:#1b2a41;color:#fff;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.mk-toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:380px){
+  .mk-btn span{font-size:13px}
+  .mk-btn{gap:4px;padding:0 6px}
+}
+@media (max-width:330px){ .mk-btn svg{display:none} }
+
+/* formulário da máscara */
+.mk-form{display:flex;flex-direction:column;gap:16px}
+.mk-f{display:flex;flex-direction:column;min-width:0}
+.mk-f .mk-lbl{color:#1b2a41;line-height:1.3}
+.mk-f input[type=text],.mk-f textarea{width:100%;font:16px Arial,sans-serif;border:1px solid #cfd6e0;border-radius:10px;background:#fff;color:#1b1b1b}
+.mk-f input[type=text]{height:46px;padding:0 12px}
+.mk-f textarea{padding:10px 12px;line-height:1.4;min-height:84px;resize:vertical;overflow:hidden}
+.mk-f input:focus,.mk-f textarea:focus{outline:2px solid rgba(31,78,140,.35);border-color:var(--brand)}
+.mk-f ::placeholder{color:#9aa6b8;font-size:14px}
+.mk-sn{display:flex;gap:8px}
+.mk-sn button{flex:1;max-width:160px;height:44px;border-radius:10px;border:1px solid #cfd6e0;background:#fff;color:#3a4657;font:bold 15px Arial,sans-serif;cursor:pointer}
+.mk-sn button.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.mk-sn button[data-v="Não"].on,.mk-sn button[data-v="NÃO"].on{background:#a12020;border-color:#a12020}
+.mk-dica{display:block;margin-top:6px;font-size:12.5px;color:#6b7a90;line-height:1.35}
+#mkOut{min-height:200px;background:#f8fafc;font-size:14px}
+@media (max-width:420px){ .mk-head h1{font-size:15.5px;white-space:normal;line-height:1.15} }
+
+/* modelos salvos */
+.mk-search{position:relative}
+.mk-search svg{position:absolute;left:12px;top:50%;width:18px;height:18px;transform:translateY(-50%);fill:none;stroke:#8a96a8;stroke-width:2.2;stroke-linecap:round}
+.mk-search input{width:100%;height:46px;padding:0 12px 0 38px;font:16px Arial,sans-serif;border:1px solid #cfd6e0;border-radius:10px;background:#fff;color:#1b1b1b}
+.mk-search input:focus{outline:2px solid rgba(31,78,140,.35);border-color:var(--brand)}
+.mk-search input::placeholder{color:#9aa6b8;font-size:14px}
+.mk-mdlist{display:flex;flex-direction:column;gap:8px;margin-top:10px;max-height:300px;overflow:auto}
+.mk-md{display:flex;flex:none;border:1px solid var(--line);border-radius:12px;background:#f8fafc;overflow:hidden}
+.mk-md-use{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:0;background:none;text-align:left;cursor:pointer;font-family:inherit;color:#1b1b1b}
+.mk-md-use:active{background:#eef4fc}
+.mk-md-use b{font-size:15px;color:var(--brand)}
+.mk-md-use small{font-size:12.5px;color:#6b7a90;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mk-md-del{flex:none;width:46px;border:0;border-left:1px solid var(--line);background:none;color:#a12020;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.mk-md-del svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mk-empty{margin:4px 2px 0;font-size:13.5px;color:#6b7a90}
+/* barra de ações acima dos campos */
+.mk-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.mk-bar-t{flex:1 1 200px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.mk-bar-t b{font-size:16px;color:#1b2a41}
+.mk-bar-t small{font-size:12.5px;color:#6b7a90}
+.mk-bar-acts{display:flex;gap:8px;flex:1 1 300px;min-width:0}
+.mk-save{color:#fff;background:linear-gradient(180deg,#2a62ad,#1f4e8c);border-color:#1b4580}
+.mk-del{color:#a12020;border-color:#e6b9b9;background:#fff}
+.mk-del:hover{background:#fdf2f2}
+
+/* PC: modelos numa coluna ao lado */
+@media (min-width:900px){
+  .mk-head{padding-left:max(20px,calc((100% - 1140px) / 2));padding-right:max(20px,calc((100% - 1140px) / 2))}
+  .mk{max-width:1180px;display:grid;grid-template-columns:minmax(0,1fr) 340px;align-items:start;gap:16px;padding:18px 20px 32px}
+  .mk > .mk-models{grid-column:2;grid-row:1 / span 3;position:sticky;top:78px;max-height:calc(100vh - 96px);display:flex;flex-direction:column}
+  .mk > .mk-models .mk-mdlist{max-height:none;flex:1;min-height:0}
+  .mk > .mk-bar,.mk > .mk-form,.mk > .mk-form ~ .mk-card{grid-column:1}
+}
+
+/* celular: barra de ações fixa embaixo, igual à da RAT */
+.mk-dock{display:none}
+@media (max-width:760px){
+  body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+  .mk-bar{display:none}                       /* os botões dela estão na barra de baixo */
+  .mk-dock{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;gap:8px;padding:8px 8px max(8px,env(safe-area-inset-bottom));
+    background:linear-gradient(180deg,#24589c,#1c467f);box-shadow:0 -2px 8px rgba(0,0,0,.2)}
+  .dk{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;height:58px;padding:0 4px;
+    border-radius:14px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.12);color:#fff;
+    font:600 12px/1.1 Arial,Helvetica,sans-serif;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.15);-webkit-tap-highlight-color:transparent;transition:transform .12s}
+  .dk span{white-space:normal;text-align:center}
+  .dk svg{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .dk:active{transform:scale(.96)}
+  .dk.pri{flex:1.5;font-size:13px;background:linear-gradient(180deg,#34b866,#23964f);border-color:#1f8a48;
+    box-shadow:0 4px 12px rgba(20,120,60,.4),inset 0 1px 0 rgba(255,255,255,.25)}
+  .dk.ghost{background:transparent;border-color:rgba(255,170,170,.45);color:#ffc9c9;box-shadow:none}
+  .mk-toast{bottom:calc(84px + env(safe-area-inset-bottom))}
+}
+
+/* painel de modelos */
+.md-top{align-items:center;margin-bottom:6px}
+.md-top .mk-lbl{margin:0}
+.md-close,.md-bg{display:none}
+.dk-badge{display:none}
+@media (max-width:760px){
+  /* no celular a lista sai da página e vira um painel (como "Minhas RATs") */
+  .mk > .mk-models{position:fixed;left:0;right:0;bottom:0;z-index:40;height:85%;max-height:none;margin:0;border-radius:18px 18px 0 0;
+    display:flex;flex-direction:column;padding:14px 14px max(14px,env(safe-area-inset-bottom));transform:translateY(105%);
+    transition:transform .25s ease;box-shadow:0 -6px 24px rgba(0,0,0,.25)}
+  .mk > .mk-models .mk-mdlist{max-height:none;flex:1;min-height:0}
+  .md-close{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border:0;border-radius:10px;background:#eef1f5;color:#3a4657;cursor:pointer}
+  .md-close svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+  .md-bg{display:block;position:fixed;inset:0;z-index:39;background:rgba(10,25,50,.45);opacity:0;pointer-events:none;transition:opacity .2s}
+  .md-open .mk > .mk-models{transform:none}
+  .md-open .md-bg{opacity:1;pointer-events:auto}
+  .md-open{overflow:hidden}
+  .md-top .mk-lbl{font-size:17px}
+  .dk{position:relative}
+  .dk.pri{flex:1.3}
+  .dk-badge{display:block;position:absolute;top:4px;right:6px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#e6a2c8;color:#1b2a41;
+    font:bold 11px/18px Arial,sans-serif;font-style:normal;text-align:center}
+  .dk-badge:empty{display:none}
+  .mk-dock{gap:6px}
+}
+@media (max-width:760px){ #mkOut ~ .mk-acts{display:none} }  /* no celular essas ações já estão na barra de baixo */
+
+/* texto pronto: pré-visualização legível; o textarea fica escondido só para copiar */
+.mk-out{position:absolute;left:-9999px;width:10px;height:10px;opacity:0}
+.mk-prev{border:1px solid #cfd6e0;border-radius:10px;background:#f8fafc;padding:10px 12px;font:14px/1.45 Arial,Helvetica,sans-serif;color:#1b1b1b}
+/* item comprido quebra a linha, mas a continuação fica recuada */
+.mk-prev div{padding:3px 0 3px 14px;text-indent:-14px;white-space:pre-wrap;overflow-wrap:anywhere}
+@media (max-width:760px){ .mk-prev ~ .mk-acts{display:none} }
+/* celular: o texto pronto usa a largura toda do card (sem a caixa interna) */
+@media (max-width:760px){
+  .mk-prev{border:0;border-radius:0;background:none;padding:0;font-size:14px}
+  .mk-card:has(> .mk-prev){padding:14px 12px}
+}
+
+/* celular: "Salvar modelo" no cabeçalho (a barra de baixo fica com menos botões) */
+.mk-hsave{display:none}
+@media (max-width:760px){
+  .mk-hsave{display:flex;align-items:center;gap:6px;flex:none;height:40px;padding:0 12px;border-radius:10px;border:1px solid rgba(255,255,255,.35);
+    background:rgba(255,255,255,.14);color:#fff;font:bold 14px Arial,sans-serif;cursor:pointer}
+  .mk-hsave svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .mk-hsave:active{transform:scale(.96)}
+}
+@media (max-width:760px){ .mk-back{display:none} .mk-head{padding-left:16px} }  /* no celular volta para a RAT com o gesto */

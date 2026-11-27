@@ -1,0 +1,13 @@
+/* gesto de arrastar entre RAT e Máscara (só aparece durante o arraste) */
+.swipe-hint{position:fixed;top:50%;z-index:200;display:flex;align-items:center;gap:6px;height:48px;padding:0 14px;border-radius:24px;
+  background:rgba(27,42,65,.9);color:#fff;font:bold 14px Arial,sans-serif;pointer-events:none;opacity:0;
+  transform:translateY(-50%) scale(.85);transition:opacity .12s,transform .12s,background .12s}
+.swipe-hint svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.swipe-hint.show{opacity:calc(.35 + var(--p,0) * .65);transform:translateY(-50%) scale(calc(.85 + var(--p,0) * .15))}
+.swipe-hint.right{right:10px}
+.swipe-hint.left{left:10px;flex-direction:row-reverse}
+.swipe-hint.left svg{transform:rotate(180deg)}
+.swipe-hint.ready{background:#23964f}
+html.swipe-out-left body{transform:translateX(-30%);opacity:0;transition:transform .12s ease-in,opacity .12s}
+html.swipe-out-right body{transform:translateX(30%);opacity:0;transition:transform .12s ease-in,opacity .12s}
+@media print{ .swipe-hint{display:none!important} }
