@@ -138,7 +138,8 @@
     }
   });
   $('mdSalvar').onclick = () => {
-    const nome = (prompt('Nome da máscara (ex.: Headset Logitech):') || '').trim();
+    // já sugere o nº do chamado como nome: a pessoa só confirma ou edita
+    const nome = (prompt('Nome da máscara (ex.: Headset Logitech):', String(dados.chamado || '').trim()) || '').trim();
     if (!nome) return;
     const { chamado, ...resto } = dados;                                  // o chamado não entra no modelo
     const igual = modelos.find(m => norm(m.nome) === norm(nome));

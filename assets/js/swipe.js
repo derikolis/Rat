@@ -5,7 +5,7 @@
   const next = document.body.dataset.swipeNext, prev = document.body.dataset.swipePrev;
   if (!next && !prev) return;
 
-  const MIN = 90;          // quanto precisa arrastar (px)
+  const MIN = 70;          // quanto precisa arrastar (px)
   let x0, y0, t0, ativo = false, dir = 0;
 
   // setinha que aparece na borda durante o arraste
@@ -19,6 +19,9 @@
     if (document.querySelector('.modal.open, .modal[style*="flex"], .drawer.open, body.md-open')) return true;
     for (let n = el; n && n !== document.body; n = n.parentElement){
       if (n.tagName === 'CANVAS' || n.tagName === 'SELECT' || n.isContentEditable) return true;
+      // campo de texto só bloqueia se estiver sendo digitado (aí o arraste move o texto dentro dele)
+      const campo = n.tagName === 'INPUT' || n.tagName === 'TEXTAREA';
+      if (campo){ if (n === document.activeElement && n.scrollWidth > n.clientWidth + 2) return true; continue; }
       if (n.scrollWidth > n.clientWidth + 2 && /(auto|scroll)/.test(getComputedStyle(n).overflowX)) return true;   // algo que rola para o lado
     }
     return false;
@@ -57,7 +60,8 @@
     ativo = false;
     const t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
     esconder();
-    if (Math.abs(dx) < MIN || Math.abs(dx) < Math.abs(dy) * 2 || Date.now() - t0 > 900) return;
+    // sem limite de tempo: pode arrastar devagar e esperar a etiqueta ficar verde
+    if (Math.abs(dx) < MIN || Math.abs(dx) < Math.abs(dy) * 1.3) return;
     const destino = dx < 0 ? next : prev;
     if (!destino) return;
     if (document.activeElement) document.activeElement.blur();          // salva o campo que estava sendo digitado

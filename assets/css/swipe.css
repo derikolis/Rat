@@ -11,3 +11,5 @@
 html.swipe-out-left body{transform:translateX(-30%);opacity:0;transition:transform .12s ease-in,opacity .12s}
 html.swipe-out-right body{transform:translateX(30%);opacity:0;transition:transform .12s ease-in,opacity .12s}
 @media print{ .swipe-hint{display:none!important} }
+/* o navegador não "rouba" o arraste para o lado (fica para o gesto RAT <-> Máscara) */
+html{touch-action:pan-y pinch-zoom}
