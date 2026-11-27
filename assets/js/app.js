@@ -458,11 +458,8 @@
     const c = out.getContext('2d'); c.fillStyle = '#fff'; c.fillRect(0, 0, w, out.height); c.drawImage(cv, 0, 0);
     return out;
   }
-  document.getElementById('btnImg').onclick = async () => {
-    syncMirrors();
-    if (!checkMissing('a imagem')) return;
-    const btn = document.getElementById('btnGerar'), lbl = btn.querySelector('span'), txt = lbl.textContent;
-    btn.disabled = true; lbl.textContent = 'Gerando...';
+  // gera a RAT aberta como imagem PNG (mesmo layout do PDF)
+  async function makeImage(){
     try {
       await loadH2C();
       if (document.fonts) await document.fonts.ready;
@@ -474,23 +471,64 @@
       const canvas = trimBottom(raw, 24);
       const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
       const name = fileName() + '.png';
-      const file = new File([blob], name, { type: 'image/png' });
+      return { blob, name, file: new File([blob], name, { type: 'image/png' }) };
+    } finally { exitPrintMode(); }
+  }
+  function download(blob, name){
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  }
+  document.getElementById('btnImg').onclick = async () => {
+    syncMirrors();
+    if (!checkMissing('a imagem')) return;
+    const btn = document.getElementById('btnGerar'), lbl = btn.querySelector('span'), txt = lbl.textContent;
+    btn.disabled = true; lbl.textContent = 'Gerando...';
+    try {
+      const { blob, name, file } = await makeImage();
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
       if (isIOS && navigator.canShare && navigator.canShare({ files: [file] })){
         await navigator.share({ files: [file], title: name });
-      } else {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob); a.download = name;
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(() => URL.revokeObjectURL(a.href), 10000);
-      }
+      } else download(blob, name);
     } catch(e){
       if (e.name !== 'AbortError') alert('Não foi possível gerar a imagem: ' + e.message);
     } finally {
-      exitPrintMode();
       btn.disabled = false; lbl.textContent = txt;
     }
   };
+
+  /* ---------- compartilhar a RAT (imagem) ---------- */
+  const shareBar = document.getElementById('shareBar');
+  let shareFile = null;
+  async function doShare(file){
+    await navigator.share({ files: [file], title: file.name.replace(/\.png$/, '') });
+  }
+  async function shareRat(){
+    syncMirrors();
+    toast('Preparando a RAT para compartilhar...');
+    let img;
+    try { img = await makeImage(); }
+    catch(e){ alert('Não foi possível gerar a imagem: ' + e.message); return; }
+    const { blob, name, file } = img;
+    if (!(navigator.canShare && navigator.canShare({ files: [file] }))){
+      download(blob, name);
+      toast('Este navegador não compartilha arquivos: a imagem foi baixada');
+      return;
+    }
+    try { await doShare(file); }
+    catch(e){
+      if (e.name === 'AbortError') return;
+      // o navegador exige um toque logo antes de abrir o compartilhar
+      shareFile = file; shareBar.querySelector('b').textContent = name; shareBar.classList.add('show');
+    }
+  }
+  document.getElementById('shareGo').onclick = async () => {
+    shareBar.classList.remove('show');
+    if (shareFile) try { await doShare(shareFile); } catch(e){ if (e.name !== 'AbortError') download(shareFile, shareFile.name); }
+    shareFile = null;
+  };
+  document.getElementById('shareX').onclick = () => { shareBar.classList.remove('show'); shareFile = null; };
   /* ---------- Nova RAT / abrir / duplicar / excluir ---------- */
   // RAT "vazia" = só tem dados do técnico e datas
   const IGNORE = ['tecnico', 'razaoSocial', 'tecData', 'clienteData', 'sigTecnico', 'nPecas'];
@@ -561,16 +599,19 @@
     dwList.innerHTML = items.map(r => {
       const d = r.data || {}, cur = r.id === currentId;
       const st = d.status === 'CONCLUIDO' ? '<i class="tag ok">Concluído</i>' : d.status === 'PENDENTE' ? '<i class="tag pend">Pendente</i>' : '';
-      const sig = d.sigCliente ? '<i class="tag sig">Cliente assinou</i>' : '<i class="tag nosig">Sem assinatura do cliente</i>';
+      const sig = d.sigCliente ? '' : '<i class="tag nosig">Sem assinatura do cliente</i>';
+      const sigImg = d.sigCliente ? `<span class="dw-sig"><img src="${d.sigCliente}" alt="Assinatura do cliente"><small>Assinatura do cliente</small></span>` : '';
       return `<div class="dw-item${cur ? ' cur' : ''}" data-id="${r.id}">
         <button type="button" class="dw-open" data-act="open">
           <span class="dw-t">${d.ocorrencia ? 'RAT ' + esc(d.ocorrencia) : '<em>RAT sem número</em>'}${cur ? ' <i class="tag now">aberta</i>' : ''}</span>
           <span class="dw-s">${esc(d.cliente || 'Sem cliente')}${d.eqModelo ? ' · ' + esc(d.eqModelo) : ''}</span>
           <span class="dw-tags">${st}${sig}</span>
+          ${sigImg}
           <span class="dw-w">Editada ${fmtWhen(r.updated)}</span>
         </button>
         <div class="dw-acts">
           <button type="button" data-act="dup" title="Duplicar (usar como modelo)"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>Duplicar</span></button>
+          <button type="button" data-act="share" title="Compartilhar"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg><span>Compartilhar</span></button>
           <button type="button" data-act="del" class="del" title="Excluir"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4h6v3"/></svg><span>Excluir</span></button>
         </div>
       </div>`;
@@ -589,6 +630,7 @@
     if (act === 'open'){ if (id !== currentId) openRat(id); closeDrawer(); }
     else if (act === 'dup'){ duplicateRat(id); closeDrawer(); }
     else if (act === 'del') deleteRat(id);
+    else if (act === 'share'){ if (id !== currentId) openRat(id); closeDrawer(); shareRat(); }
   });
 
   /* ---------- aviso rápido ---------- */
