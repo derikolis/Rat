@@ -8,8 +8,8 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="assets/icons/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-<link rel="stylesheet" href="assets/css/mascara.css?v=51">
-<link rel="stylesheet" href="assets/css/swipe.css?v=51">
+<link rel="stylesheet" href="assets/css/mascara.css?v=52">
+<link rel="stylesheet" href="assets/css/swipe.css?v=52">
 </head>
 <body data-swipe-prev="./">
 
@@ -18,23 +18,23 @@
     <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg><span>Voltar</span>
   </a>
   <h1>Máscara de atendimento</h1>
-  <button type="button" class="mk-hsave" data-go="mdSalvar" aria-label="Salvar modelo">
+  <button type="button" class="mk-hsave" data-go="mdSalvar" aria-label="Salvar máscara">
     <svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v5h7V3M8 21v-7h8v7"/></svg><span>Salvar</span>
   </button>
 </header>
 
 <main class="mk">
   <div class="md-bg" id="mdBg"></div>
-  <section class="mk-card mk-models" id="mdPanel" aria-label="Modelos salvos">
+  <section class="mk-card mk-models" id="mdPanel" aria-label="Máscaras salvas">
     <div class="mk-row md-top">
-      <span class="mk-lbl">Modelos salvos <span id="mdCount"></span></span>
+      <span class="mk-lbl">Máscaras salvas <span id="mdCount"></span></span>
       <button type="button" class="md-close" id="mdClose" aria-label="Fechar">
         <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
       </button>
     </div>
     <div class="mk-search">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
-      <input type="search" id="mdBusca" placeholder="Pesquisar modelo (ex.: headset logitech)" autocomplete="off">
+      <input type="search" id="mdBusca" placeholder="Pesquisar máscara (ex.: headset logitech)" autocomplete="off">
     </div>
     <div class="mk-mdlist" id="mdList"></div>
   </section>
@@ -43,7 +43,7 @@
     <div class="mk-bar-t"><b>Preencher máscara</b><small>Os campos vazios saem como N/A</small></div>
     <div class="mk-bar-acts">
       <button type="button" class="mk-btn mk-save" id="mdSalvar">
-        <svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v5h7V3M8 21v-7h8v7"/></svg><span>Salvar modelo</span>
+        <svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v5h7V3M8 21v-7h8v7"/></svg><span>Salvar máscara</span>
       </button>
       <button type="button" class="mk-btn mk-del" id="mkClear">
         <svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4h6v3"/></svg><span>Limpar campos</span>
@@ -77,7 +77,7 @@
     <svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>Copiar</span>
   </button>
   <button type="button" class="dk" id="dkModelos">
-    <svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg><span>Modelos</span><i class="dk-badge" id="dkCount"></i>
+    <svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg><span>Máscaras</span><i class="dk-badge" id="dkCount"></i>
   </button>
   <button type="button" class="dk" data-go="mkWa">
     <svg viewBox="0 0 24 24"><path d="M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.4z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1.2-1.6-2-1-1 .8a5 5 0 0 1-2.9-2.9l.8-1-1-2z"/></svg><span>WhatsApp</span>
@@ -89,8 +89,8 @@
 
 <div class="mk-toast" id="mkToast"></div>
 
-<script src="assets/js/mascara.js?v=51"></script>
-<script src="assets/js/swipe.js?v=51"></script>
+<script src="assets/js/mascara.js?v=52"></script>
+<script src="assets/js/swipe.js?v=52"></script>
 <script>
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 </script>

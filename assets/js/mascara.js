@@ -109,15 +109,15 @@
       .filter(m => { const t = norm(m.nome + ' ' + Object.values(m.dados).join(' ')); return termos.every(x => t.includes(x)); })
       .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
     if (!modelos.length){
-      mdList.innerHTML = '<p class="mk-empty">Nenhum modelo ainda. Preencha a máscara e toque em <b>Salvar modelo</b>.</p>';
+      mdList.innerHTML = '<p class="mk-empty">Nenhuma máscara salva ainda. Preencha e toque em <b>Salvar</b>.</p>';
       return;
     }
-    if (!achados.length){ mdList.innerHTML = '<p class="mk-empty">Nenhum modelo encontrado.</p>'; return; }
+    if (!achados.length){ mdList.innerHTML = '<p class="mk-empty">Nenhuma máscara encontrada.</p>'; return; }
     mdList.innerHTML = achados.map(m => `<div class="mk-md" data-id="${m.id}">
         <button type="button" class="mk-md-use" data-act="usar">
           <b>${esc(m.nome)}</b><small>${esc(resumo(m.dados) || 'Sem descrição')}</small>
         </button>
-        <button type="button" class="mk-md-del" data-act="del" aria-label="Excluir modelo ${esc(m.nome)}">
+        <button type="button" class="mk-md-del" data-act="del" aria-label="Excluir máscara ${esc(m.nome)}">
           <svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4h6v3"/></svg>
         </button>
       </div>`).join('');
@@ -131,25 +131,25 @@
       dados = { ...m.dados, chamado: dados.chamado || '' };
       preencher();
       fecharModelos();
-      toast('Modelo "' + m.nome + '" carregado. Edite se precisar.');
+      toast('Máscara "' + m.nome + '" carregada. Edite se precisar.');
       $('mkForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else if (confirm('Excluir o modelo "' + m.nome + '"?')){
+    } else if (confirm('Excluir a máscara "' + m.nome + '"?')){
       modelos = modelos.filter(x => x !== m); gravarModelos(); renderModelos();
     }
   });
   $('mdSalvar').onclick = () => {
-    const nome = (prompt('Nome do modelo (ex.: Headset Logitech):') || '').trim();
+    const nome = (prompt('Nome da máscara (ex.: Headset Logitech):') || '').trim();
     if (!nome) return;
     const { chamado, ...resto } = dados;                                  // o chamado não entra no modelo
     const igual = modelos.find(m => norm(m.nome) === norm(nome));
     if (igual){
-      if (!confirm('Já existe o modelo "' + igual.nome + '". Substituir pelo que está preenchido agora?')) return;
+      if (!confirm('Já existe a máscara "' + igual.nome + '". Substituir pelo que está preenchido agora?')) return;
       igual.dados = resto; igual.updated = Date.now();
     } else {
       modelos.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), nome, dados: resto, updated: Date.now() });
     }
     gravarModelos(); busca.value = ''; renderModelos();
-    toast('Modelo "' + nome + '" salvo');
+    toast('Máscara "' + nome + '" salva');
   };
 
   // ações
