@@ -1,7 +1,7 @@
 // Service worker: guarda o site no aparelho para abrir sem internet.
-// Sempre que publicar uma versão nova, aumente o número abaixo (rat-v31, rat-v48...)
+// Sempre que publicar uma versão nova, aumente o número abaixo (rat-v31, rat-v49...)
 // e o ?v= do style.css e do app.js no index.html.
-const CACHE = 'rat-v48';
+const CACHE = 'rat-v49';
 
 const FILES = [
   './',

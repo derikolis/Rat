@@ -161,7 +161,7 @@
   $('mkCopy').onclick = async () => {
     try { await navigator.clipboard.writeText(out.value); }
     catch(e){ out.removeAttribute('readonly'); out.select(); document.execCommand('copy'); out.setAttribute('readonly', ''); }
-    toast('Máscara copiada');
+    if (!/Android/i.test(navigator.userAgent)) toast('Máscara copiada');   // no Android o próprio sistema já mostra "Copiado"
   };
   $('mkWa').onclick = () => { window.open('https://wa.me/?text=' + encodeURIComponent(out.value), '_blank'); };
   $('mkShare').onclick = async () => {
