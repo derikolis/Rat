@@ -10,7 +10,7 @@
 
   // setinha que aparece na borda durante o arraste
   const seta = document.createElement('div');
-  seta.className = 'swipe-hint';
+  seta.className = 'swipe-hint ' + (next ? 'right' : 'left');
   seta.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg><span></span>';
   document.body.appendChild(seta);
 
@@ -41,7 +41,13 @@
     if (!destino || Math.abs(dx) < 25){ esconder(); return; }
     dir = dx < 0 ? -1 : 1;
     const p = Math.min(1, Math.abs(dx) / MIN);
-    seta.className = 'swipe-hint show ' + (dir < 0 ? 'right' : 'left') + (p >= 1 ? ' ready' : '');
+    // troca de lado só quando está escondida, para não atravessar a tela
+    const lado = dir < 0 ? 'right' : 'left';
+    if (!seta.classList.contains(lado)){
+      if (seta.classList.contains('show')){ esconder(); return; }
+      seta.classList.remove('left', 'right'); seta.classList.add(lado);
+    }
+    seta.classList.add('show'); seta.classList.toggle('ready', p >= 1);
     seta.style.setProperty('--p', p.toFixed(2));
     seta.querySelector('span').textContent = destino.includes('mascara') ? 'Máscara' : 'RAT';
   }, { passive: true });
@@ -60,7 +66,8 @@
   }, { passive: true });
   document.addEventListener('touchcancel', () => { ativo = false; esconder(); }, { passive: true });
 
-  function esconder(){ seta.className = 'swipe-hint'; }
+  // some no mesmo lugar (antes perdia o lado e "pulava" para a esquerda enquanto desaparecia)
+  function esconder(){ seta.classList.remove('show', 'ready'); }
 
   // ao voltar pelo botão "voltar" do celular, a página pode vir da memória ainda deslizada
   window.addEventListener('pageshow', () => document.documentElement.classList.remove('swipe-out-left', 'swipe-out-right'));
