@@ -461,3 +461,7 @@
 
 /* cada RAT mantém a altura dela; a lista rola (antes espremia e cortava os botões) */
 .dw-item{flex:none}
+
+/* Minhas RATs: cantos arredondados (o cabeçalho azul cobria o arredondado) */
+.dw-panel{overflow:hidden;border-radius:18px 0 0 18px}
+@media screen and (max-width:760px){ .dw-panel{border-radius:18px 18px 0 0} }
