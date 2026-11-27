@@ -447,6 +447,8 @@
 /* lista: 3 ações cabendo no celular */
 .dw-acts button{min-width:0;padding:0 4px;white-space:nowrap}
 @media (max-width:380px){ .dw-acts button span{font-size:13px} .dw-acts button{gap:4px} }
+.dw-acts svg{flex:none}
+@media (max-width:340px){ .dw-acts svg{display:none} }
 /* barra "imagem pronta" (quando o navegador pede um toque para compartilhar) */
 .share-bar{position:fixed;left:12px;right:12px;bottom:max(16px,env(safe-area-inset-bottom));z-index:1300;display:flex;align-items:center;gap:8px;
   max-width:520px;margin:0 auto;padding:10px 10px 10px 14px;background:#1b2a41;color:#fff;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.25);
