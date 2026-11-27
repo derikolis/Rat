@@ -499,8 +499,6 @@
     }
   };
 
-  document.getElementById('btnMascara').onclick = () => { writeNow(); location.href = 'mascara.html'; };
-
   /* ---------- compartilhar a RAT (imagem) ---------- */
   const shareBar = document.getElementById('shareBar');
   let shareFile = null;
