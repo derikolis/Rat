@@ -11,8 +11,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="RAT">
-<link rel="stylesheet" href="assets/css/style.css?v=54">
-<link rel="stylesheet" href="assets/css/swipe.css?v=54">
+<link rel="stylesheet" href="assets/css/style.css?v=55">
+<link rel="stylesheet" href="assets/css/swipe.css?v=55">
 </head>
 <body data-swipe-next="mascara.html">
 
@@ -37,6 +37,11 @@
   <button class="tb" id="btnLista">
     <svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>
     <span>Minhas RATs</span><em class="badge" id="listaCount"></em>
+  </button>
+  <!-- PC: botão para a Máscara (no celular usa o gesto de arrastar) -->
+  <button class="tb pc-only" id="btnMascara">
+    <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+    <span>Máscara</span>
   </button>
   <button class="tb" id="btnNova">
     <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 11v6"/><path d="M9 14h6"/></svg>
@@ -184,7 +189,10 @@
         <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
       </button>
     </header>
-    <p class="dw-tip">Toque numa RAT para abrir e editar. Use <b>Duplicar</b> para aproveitar uma RAT como modelo.</p>
+    <div class="dw-search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+      <input type="search" id="dwBusca" placeholder="Pesquisar: nº, cliente, equipamento, data..." autocomplete="off">
+    </div>
     <div class="dw-list" id="dwList"></div>
     <footer class="dw-foot">
       <button type="button" class="dw-new" id="dwNova">
@@ -211,7 +219,7 @@
   </footer>
 </div>
 
-<script src="assets/js/app.js?v=54"></script>
-<script src="assets/js/swipe.js?v=54"></script>
+<script src="assets/js/app.js?v=55"></script>
+<script src="assets/js/swipe.js?v=55"></script>
 </body>
 </html>

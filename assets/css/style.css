@@ -465,3 +465,14 @@
 /* Minhas RATs: cantos arredondados (o cabeçalho azul cobria o arredondado) */
 .dw-panel{overflow:hidden;border-radius:18px 0 0 18px}
 @media screen and (max-width:760px){ .dw-panel{border-radius:18px 18px 0 0} }
+
+/* Minhas RATs: pesquisa */
+.dw-search{position:relative;margin:10px 12px 0;flex:none}
+.dw-search svg{position:absolute;left:12px;top:50%;width:18px;height:18px;transform:translateY(-50%);fill:none;stroke:#8a96a8;stroke-width:2.2;stroke-linecap:round}
+.dw-search input{width:100%;height:46px;padding:0 12px 0 38px;font:16px Arial,sans-serif;border:1px solid #cfd6e0;border-radius:12px;background:#fff;color:#1b1b1b;box-sizing:border-box}
+.dw-search input:focus{outline:2px solid rgba(31,78,140,.35);border-color:var(--brand)}
+.dw-search input::placeholder{color:#9aa6b8;font-size:14px}
+.dw-empty{margin:8px 4px;font:14px Arial,sans-serif;color:#6b7a90}
+
+/* botão Máscara só no PC (no celular a máscara abre com o gesto) */
+@media screen and (max-width:760px){ .toolbar .pc-only{display:none!important} }

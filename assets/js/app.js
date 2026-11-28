@@ -499,6 +499,8 @@
     }
   };
 
+  document.getElementById('btnMascara').onclick = () => { writeNow(); location.href = 'mascara.html'; };
+
   /* ---------- compartilhar a RAT (imagem) ---------- */
   const shareBar = document.getElementById('shareBar');
   let shareFile = null;
@@ -595,8 +597,21 @@
     document.getElementById('listaCount').textContent = n > 1 ? n : '';
     document.getElementById('dwCount').textContent = '(' + n + ')';
   }
+  // pesquisa sem diferenciar acento e maiúscula, em todos os campos da RAT (menos as assinaturas)
+  const dwBusca = document.getElementById('dwBusca');
+  const norm = v => [...String(v || '').normalize('NFD')].filter(c => { const n = c.charCodeAt(0); return n < 768 || n > 879; }).join('').toLowerCase();
+  function textoRat(d){
+    const vals = Object.entries(d || {}).filter(([k, v]) => !/^sig/.test(k) && typeof v === 'string').map(([, v]) => v);
+    // datas também como dd/mm/aaaa
+    for (const k of ['tecData', 'clienteData']) if (/^\d{4}-\d{2}-\d{2}$/.test(d[k] || '')) vals.push(d[k].split('-').reverse().join('/'));
+    if (d.status) vals.push(d.status === 'CONCLUIDO' ? 'concluido' : 'pendente');
+    return norm(vals.join(' '));
+  }
   function renderList(){
-    const items = [...list].sort((a, b) => b.updated - a.updated);
+    const termos = norm(dwBusca.value).split(/\s+/).filter(Boolean);
+    const items = [...list].sort((a, b) => b.updated - a.updated)
+      .filter(r => { const t = textoRat(r.data); return termos.every(x => t.includes(x)); });
+    if (!items.length){ dwList.innerHTML = '<p class="dw-empty">Nenhuma RAT encontrada.</p>'; return; }
     dwList.innerHTML = items.map(r => {
       const d = r.data || {}, cur = r.id === currentId;
       const st = d.status === 'CONCLUIDO' ? '<i class="tag ok">Concluído</i>' : d.status === 'PENDENTE' ? '<i class="tag pend">Pendente</i>' : '';
@@ -618,7 +633,8 @@
       </div>`;
     }).join('');
   }
-  function openDrawer(){ writeNow(); renderList(); drawer.classList.add('open'); drawer.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; }
+  dwBusca.addEventListener('input', renderList);
+  function openDrawer(){ writeNow(); dwBusca.value = ''; renderList(); drawer.classList.add('open'); drawer.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; }
   function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; }
   document.getElementById('btnLista').onclick = openDrawer;
   document.getElementById('dwClose').onclick = closeDrawer;
